@@ -28,8 +28,5 @@ Yes!
 
 == Changelog ==
 
-= 1.1 =
-* Added callback parameter for JSON-P
-
 = 1.0 =
 * Initial release
