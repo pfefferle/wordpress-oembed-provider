@@ -83,7 +83,7 @@ class OembedProvider {
             print '<?xml version="1.0" encoding="' . get_option('blog_charset') . '" standalone="yes"?>';
 	          print '<oembed>';
 	          foreach(array_keys($oembed) as $element){
-	            print '<' . $element . '>' . htmlentities($oembed[$element]) . '</' . $element . '>';
+	            print '<' . $element . '>' . htmlspecialchars($oembed[$element]) . '</' . $element . '>';
 	          }
 	          print '</oembed>';
 	          break;
