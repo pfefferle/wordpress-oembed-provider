@@ -17,10 +17,10 @@ add_action('parse_query', array('OembedProvider', 'print_oembed_file'));
 add_filter('query_vars', array('OembedProvider', 'queryvars'));
 
 class OembedProvider {
-	function add_oembed_links(){
+  function add_oembed_links(){
     if(is_single() || is_page() || is_attachment()){
-      print '<link rel="alternate" type="application/json+oembed" href="' . get_bloginfo('wpurl') . '/?format=json&amp;oembed=' . urlencode(get_permalink())  . '" />';
-      print '<link rel="alternate" type="application/xml+oembed" href="' . get_bloginfo('wpurl') . '/?format=xml&amp;oembed=' . urlencode(get_permalink())  . '" />';
+      print '<link rel="alternate" type="application/json+oembed" href="' . site_url('/') . '?format=json&amp;oembed=' . urlencode(get_permalink())  . '" />';
+      print '<link rel="alternate" type="application/xml+oembed" href="' . site_url('/') . '?format=xml&amp;oembed=' . urlencode(get_permalink())  . '" />';
     }
   }
 	
