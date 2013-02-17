@@ -1,15 +1,11 @@
 <?php
 /*
-Plugin Name: oEmbedProvider
-Plugin URI: https://github.com/pfefferle/oEmbedProvider
+Plugin Name: oEmbed Provider
+Plugin URI: http://wordpress.org/extend/plugins/oembed-provider/
 Description: An oEmbed provider for Wordpress
-Version: 1.0
-Author: Matthias Pfefferle
-Author URI: http://notizblog.org/
-*/
-
-/*
-Based on the plugin of Craig Andrews <candrews@integralblue.com> http://candrews.integralblue.com
+Version: 2.0.0-dev
+Author: pfefferle, candrews
+Author URI: https://github.com/pfefferle/oEmbedProvider/
 */
 
 add_action('wp_head', array('OembedProvider', 'add_oembed_links'));
