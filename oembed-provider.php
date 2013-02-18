@@ -20,7 +20,7 @@ class OembedProvider {
    * auto discovery links
    */
   function add_oembed_links(){
-    if(is_single() || is_page() || is_attachment()){
+    if(is_singular()){
       echo '<link rel="alternate" type="application/json+oembed" href="' . site_url('/?oembed=true&amp;format=json&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
       echo '<link rel="alternate" type="text/xml+oembed" href="' . site_url('/?oembed=true&amp;format=xml&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
     }
@@ -57,13 +57,16 @@ class OembedProvider {
     
     $post_type = get_post_type($post);
     
+    // add support for alternate output formats
     $oembed_provider_formats = apply_filters("oembed_provider_formats", array('json', 'xml'));
     
+    // check output format
     $format = "json";
     if (array_key_exists('format', $wp->query_vars) && in_array(strtolower($wp->query_vars['format']), $oembed_provider_formats)) {
       $format = $wp->query_vars['format'];
     }
     
+    // content filter
     $oembed_provider_data = apply_filters("oembed_provider_data", array(), $post_type, $post);
     $oembed_provider_data = apply_filters("oembed_provider_data_{$post_type}", $oembed_provider_data, $post);
     
@@ -81,12 +84,12 @@ class OembedProvider {
   function generate_default_content($oembed_provider_data, $post_type, $post) {
     $author = get_userdata($post->post_author);
 
-    $oembed_provider_data['version']='1.0';
-    $oembed_provider_data['provider_name']=get_bloginfo('name');
-    $oembed_provider_data['provider_url']=home_url();
-    $oembed_provider_data['author_name']=$author->display_name;
-    $oembed_provider_data['author_url']=get_author_posts_url($author->ID, $author->nicename);
-    $oembed_provider_data['title']=$post->post_title;
+    $oembed_provider_data['version'] = '1.0';
+    $oembed_provider_data['provider_name'] = get_bloginfo('name');
+    $oembed_provider_data['provider_url'] = home_url();
+    $oembed_provider_data['author_name'] = $author->display_name;
+    $oembed_provider_data['author_url'] = get_author_posts_url($author->ID, $author->nicename);
+    $oembed_provider_data['title'] = $post->post_title;
     
     return $oembed_provider_data;
   }
