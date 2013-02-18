@@ -3,7 +3,7 @@
 Plugin Name: oEmbed Provider
 Plugin URI: http://wordpress.org/extend/plugins/oembed-provider/
 Description: An oEmbed provider for Wordpress
-Version: 2.0.0-dev
+Version: 2.0.0
 Author: pfefferle, candrews
 Author URI: https://github.com/pfefferle/oEmbedProvider/
 */
