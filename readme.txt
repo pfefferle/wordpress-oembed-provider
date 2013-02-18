@@ -27,5 +27,8 @@ Yes!
 
 == Changelog ==
 
+= 2.0.0 =
+* complete refactoring
+
 = 1.0 =
 * Initial release
