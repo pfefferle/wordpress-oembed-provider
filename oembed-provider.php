@@ -3,7 +3,7 @@
 Plugin Name: oEmbed Provider
 Plugin URI: http://wordpress.org/extend/plugins/oembed-provider/
 Description: An oEmbed provider for Wordpress
-Version: 2.0.0
+Version: 2.0.1-dev
 Author: pfefferle, candrews
 Author URI: https://github.com/pfefferle/oEmbedProvider/
 */
@@ -52,7 +52,7 @@ class OembedProvider {
     
     if(!$post) {
       header('Status: 404');
-      die("Not found");
+      wp_die("Not found");
     }
     
     $post_type = get_post_type($post);
@@ -70,7 +70,7 @@ class OembedProvider {
     $oembed_provider_data = apply_filters("oembed_provider_data", array(), $post_type, $post);
     $oembed_provider_data = apply_filters("oembed_provider_data_{$post_type}", $oembed_provider_data, $post);
     
-    do_action("oembed_provider_render", $oembed_provider_data, $wp->query_vars);
+    do_action("oembed_provider_render", $format, $oembed_provider_data, $wp->query_vars);
     do_action("oembed_provider_render_{$format}", $oembed_provider_data, $wp->query_vars);
   }
   
