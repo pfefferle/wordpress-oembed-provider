@@ -106,7 +106,13 @@ class OembedProvider {
     } else {
       $oembed_provider_data['type']='link';
     }
+    
     $oembed_provider_data['url'] = wp_get_attachment_url($post->ID);
+    
+    $metadata = wp_get_attachment_metadata($post->ID);    
+    
+    $oembed_provider_data['width'] = $metadata['width'];
+    $oembed_provider_data['height'] = $metadata['height'];
     
     return $oembed_provider_data;
   }
