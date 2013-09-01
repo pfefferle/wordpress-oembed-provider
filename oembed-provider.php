@@ -100,7 +100,7 @@ class OembedProvider {
    * @param array $oembed_provider_data
    * @param Object $post
    */
-  function generate_attachement_content($oembed_provider_data, $post) {
+  function generate_attachment_content($oembed_provider_data, $post) {
     if (substr($post->post_mime_type,0,strlen('image/'))=='image/') {
       $oembed_provider_data['type']='photo';
     } else {
@@ -173,7 +173,7 @@ add_action('wp_head', array('OembedProvider', 'add_oembed_links'));
 add_action('parse_query', array('OembedProvider', 'parse_query'));
 add_filter('query_vars', array('OembedProvider', 'query_vars'));
 add_filter('oembed_provider_data', array('OembedProvider', 'generate_default_content'), 90, 3);
-add_filter('oembed_provider_data_attachement', array('OembedProvider', 'generate_attachement_content'), 91, 2);
+add_filter('oembed_provider_data_attachment', array('OembedProvider', 'generate_attachment_content'), 91, 2);
 add_filter('oembed_provider_data_post', array('OembedProvider', 'generate_post_content'), 91, 2);
 add_filter('oembed_provider_data_page', array('OembedProvider', 'generate_post_content'), 91, 2);
 add_action('oembed_provider_render_json', array('OembedProvider', 'render_json'), 99, 2);
