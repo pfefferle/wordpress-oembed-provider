@@ -15,12 +15,12 @@ Author URI: https://github.com/pfefferle/oEmbedProvider/
  * @author Craig Andrews
  */
 class OembedProvider {
-  
+
   /**
    * auto discovery links
    */
   function add_oembed_links(){
-    if(is_singular()){
+    if (is_singular()) {
       echo '<link rel="alternate" type="application/json+oembed" href="' . site_url('/?oembed=true&amp;format=json&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
       echo '<link rel="alternate" type="text/xml+oembed" href="' . site_url('/?oembed=true&amp;format=xml&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
     }
@@ -37,7 +37,7 @@ class OembedProvider {
 
     return $query_vars;
   }
-  
+
   /**
    * handles request
    */
@@ -49,31 +49,31 @@ class OembedProvider {
 
     $post_ID = url_to_postid($wp->query_vars['url']);
     $post = get_post($post_ID);
-    
+
     if(!$post) {
       header('Status: 404');
       wp_die("Not found");
     }
-    
+
     $post_type = get_post_type($post);
-    
+
     // add support for alternate output formats
     $oembed_provider_formats = apply_filters("oembed_provider_formats", array('json', 'xml'));
-    
+
     // check output format
     $format = "json";
     if (array_key_exists('format', $wp->query_vars) && in_array(strtolower($wp->query_vars['format']), $oembed_provider_formats)) {
       $format = $wp->query_vars['format'];
     }
-    
+
     // content filter
     $oembed_provider_data = apply_filters("oembed_provider_data", array(), $post_type, $post);
     $oembed_provider_data = apply_filters("oembed_provider_data_{$post_type}", $oembed_provider_data, $post);
-    
+
     do_action("oembed_provider_render", $format, $oembed_provider_data, $wp->query_vars);
     do_action("oembed_provider_render_{$format}", $oembed_provider_data, $wp->query_vars);
   }
-  
+
   /**
    * adds default content
    *
@@ -90,10 +90,10 @@ class OembedProvider {
     $oembed_provider_data['author_name'] = $author->display_name;
     $oembed_provider_data['author_url'] = get_author_posts_url($author->ID, $author->nicename);
     $oembed_provider_data['title'] = $post->post_title;
-    
+
     return $oembed_provider_data;
   }
-  
+
   /**
    * adds attachement specific content
    *
@@ -102,21 +102,21 @@ class OembedProvider {
    */
   function generate_attachment_content($oembed_provider_data, $post) {
     if (substr($post->post_mime_type,0,strlen('image/'))=='image/') {
-      $oembed_provider_data['type']='photo';
+      $oembed_provider_data['type'] = 'photo';
     } else {
-      $oembed_provider_data['type']='link';
+      $oembed_provider_data['type'] = 'link';
     }
-    
+
     $oembed_provider_data['url'] = wp_get_attachment_url($post->ID);
-    
-    $metadata = wp_get_attachment_metadata($post->ID);    
-    
+
+    $metadata = wp_get_attachment_metadata($post->ID);
+
     $oembed_provider_data['width'] = $metadata['width'];
     $oembed_provider_data['height'] = $metadata['height'];
-    
+
     return $oembed_provider_data;
   }
-  
+
   /**
    * adds post/page specific content
    *
@@ -130,12 +130,12 @@ class OembedProvider {
       $oembed_provider_data['thumbnail_width'] = $image[1];
       $oembed_provider_data['thumbnail_height'] = $image[2];
     }
-    $oembed_provider_data['type']='rich';
+    $oembed_provider_data['type'] = 'rich';
     $oembed_provider_data['html'] = empty($post->post_excerpt) ? $post->post_content : $post->post_excerpt;
 
     return $oembed_provider_data;
   }
-  
+
   /**
    * render json output
    *
@@ -143,19 +143,19 @@ class OembedProvider {
    */
   function render_json($oembed_provider_data, $wp_query) {
     header('Content-Type: application/json; charset=' . get_bloginfo('charset'), true);
-    
+
     // render json output
     $json = json_encode($oembed_provider_data);
-    
+
     // add callback if available
     if (array_key_exists('callback', $wp_query)) {
       $json = $wp_query['callback'] . "($json);";
     }
-    
+
     echo $json;
     exit;
   }
-  
+
   /**
    * render xml output
    *
@@ -163,7 +163,7 @@ class OembedProvider {
    */
   function render_xml($oembed_provider_data) {
     header('Content-Type: text/xml; charset=' . get_bloginfo('charset'), true);
-    
+
     // render xml-output
     echo '<?xml version="1.0" encoding="' . get_bloginfo('charset') . '" ?>';
     echo '<oembed>';
