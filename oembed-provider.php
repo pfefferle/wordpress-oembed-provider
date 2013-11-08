@@ -168,7 +168,7 @@ class OembedProvider {
     echo '<?xml version="1.0" encoding="' . get_bloginfo('charset') . '" ?>';
     echo '<oembed>';
     foreach(array_keys($oembed_provider_data) as $element){
-      echo '<' . $element . '>' . htmlspecialchars($oembed_provider_data[$element]) . '</' . $element . '>';
+      echo '<' . $element . '>' . esc_html($oembed_provider_data[$element]) . '</' . $element . '>';
     }
     echo '</oembed>';
     exit;
