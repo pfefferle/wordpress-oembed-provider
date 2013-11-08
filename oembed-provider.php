@@ -131,7 +131,7 @@ class OembedProvider {
       $oembed_provider_data['thumbnail_height'] = $image[2];
     }
     $oembed_provider_data['type'] = 'rich';
-    $oembed_provider_data['html'] = empty($post->post_excerpt) ? $post->post_content : $post->post_excerpt;
+    $oembed_provider_data['html'] = $post->post_content;
 
     return $oembed_provider_data;
   }
