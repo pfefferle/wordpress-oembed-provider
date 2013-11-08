@@ -51,7 +51,7 @@ class OembedProvider {
     $post = get_post($post_ID);
 
     if(!$post) {
-      header('Status: 404');
+      status_header(400);
       wp_die("Not found");
     }
 
