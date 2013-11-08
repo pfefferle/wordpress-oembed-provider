@@ -19,7 +19,7 @@ class OembedProvider {
   /**
    * auto discovery links
    */
-  function add_oembed_links() {
+  public static function add_oembed_links() {
     if (is_singular()) {
       echo '<link rel="alternate" type="application/json+oembed" href="' . site_url('/?oembed=true&amp;format=json&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
       echo '<link rel="alternate" type="text/xml+oembed" href="' . site_url('/?oembed=true&amp;format=xml&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
@@ -29,7 +29,7 @@ class OembedProvider {
   /**
    * adds query vars
    */
-  function query_vars($query_vars) {
+  public static function query_vars($query_vars) {
     $query_vars[] = 'oembed';
     $query_vars[] = 'format';
     $query_vars[] = 'url';
@@ -41,7 +41,7 @@ class OembedProvider {
   /**
    * handles request
    */
-  function parse_query($wp) {
+  public static function parse_query($wp) {
     if (!array_key_exists('oembed', $wp->query_vars) ||
         !array_key_exists('url', $wp->query_vars)) {
       return;
@@ -51,7 +51,7 @@ class OembedProvider {
     $post = get_post($post_ID);
 
     if(!$post) {
-      status_header(400);
+      header('Status: 404');
       wp_die("Not found");
     }
 
@@ -81,7 +81,7 @@ class OembedProvider {
    * @param string $post_type
    * @param Object $post
    */
-  function generate_default_content($oembed_provider_data, $post_type, $post) {
+  public static function generate_default_content($oembed_provider_data, $post_type, $post) {
     $author = get_userdata($post->post_author);
 
     $oembed_provider_data['version'] = '1.0';
@@ -100,7 +100,7 @@ class OembedProvider {
    * @param array $oembed_provider_data
    * @param Object $post
    */
-  function generate_attachment_content($oembed_provider_data, $post) {
+  public static function generate_attachment_content($oembed_provider_data, $post) {
     if (substr($post->post_mime_type,0,strlen('image/'))=='image/') {
       $oembed_provider_data['type'] = 'photo';
     } else {
@@ -123,7 +123,7 @@ class OembedProvider {
    * @param array $oembed_provider_data
    * @param Object $post
    */
-  function generate_post_content($oembed_provider_data, $post) {
+  public static function generate_post_content($oembed_provider_data, $post) {
     if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
       $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID));
       $oembed_provider_data['thumbnail_url'] = $image[0];
@@ -141,7 +141,7 @@ class OembedProvider {
    *
    * @param array $oembed_provider_data
    */
-  function render_json($oembed_provider_data, $wp_query) {
+  public static function render_json($oembed_provider_data, $wp_query) {
     header('Content-Type: application/json; charset=' . get_bloginfo('charset'), true);
 
     // render json output
@@ -161,7 +161,7 @@ class OembedProvider {
    *
    * @param array $oembed_provider_data
    */
-  function render_xml($oembed_provider_data) {
+  public static function render_xml($oembed_provider_data) {
     header('Content-Type: text/xml; charset=' . get_bloginfo('charset'), true);
 
     // render xml-output
