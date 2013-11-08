@@ -19,7 +19,7 @@ class OembedProvider {
   /**
    * auto discovery links
    */
-  function add_oembed_links(){
+  function add_oembed_links() {
     if (is_singular()) {
       echo '<link rel="alternate" type="application/json+oembed" href="' . site_url('/?oembed=true&amp;format=json&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
       echo '<link rel="alternate" type="text/xml+oembed" href="' . site_url('/?oembed=true&amp;format=xml&amp;url=' . urlencode(get_permalink())) . '" />'."\n";
