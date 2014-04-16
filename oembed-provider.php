@@ -47,7 +47,7 @@ class OembedProvider {
       return;
     }
 
-    $post_ID = url_to_postid($wp->query_vars['url']);
+    $post_ID = url_to_postid( apply_filters( 'oembed_url', $wp->query_vars['url'] ) );
     $post = get_post($post_ID);
 
     if(!$post) {
