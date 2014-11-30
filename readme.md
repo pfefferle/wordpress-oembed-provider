@@ -27,10 +27,10 @@ Yes!
 
 ## Changelog ##
 
-### 2.1.0
+### 2.1.0 ###
 * added `oembed_url` filter: https://github.com/pfefferle/wordpress-oembed-provider/pull/2
 * added `custom_post_type` support
-###
+
 ### 2.0.1 ###
 * type 'rich' now returns the full html
 * take use of more WordPress functions

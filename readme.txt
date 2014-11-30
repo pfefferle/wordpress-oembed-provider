@@ -27,7 +27,7 @@ Yes!
 
 == Changelog ==
 
-= 2.1.0
+= 2.1.0 =
 * added `oembed_url` filter: https://github.com/pfefferle/wordpress-oembed-provider/pull/2
 * added `custom_post_type` support
 
