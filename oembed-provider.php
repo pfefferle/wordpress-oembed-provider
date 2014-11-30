@@ -3,10 +3,12 @@
 Plugin Name: oEmbed Provider
 Plugin URI: http://wordpress.org/extend/plugins/oembed-provider/
 Description: An oEmbed provider for Wordpress
-Version: 2.0.1
+Version: 2.1.0
 Author: pfefferle, candrews
 Author URI: https://github.com/pfefferle/oEmbedProvider/
 */
+
+add_action('init', array('OembedProviderPlugin', 'init'));
 
 /**
  * oEmbed Provider for WordPress
@@ -14,7 +16,20 @@ Author URI: https://github.com/pfefferle/oEmbedProvider/
  * @author Matthias Pfefferle
  * @author Craig Andrews
  */
-class OembedProvider {
+class OembedProviderPlugin {
+
+  /**
+   * initialize plugin
+   */
+  public static function init() {
+    add_action('wp_head', array('OembedProviderPlugin', 'add_oembed_links'));
+    add_action('parse_query', array('OembedProviderPlugin', 'parse_query'));
+    add_filter('query_vars', array('OembedProviderPlugin', 'query_vars'));
+    add_filter('oembed_provider_data', array('OembedProviderPlugin', 'generate_default_content'), 90, 3);
+    add_filter('oembed_provider_data_attachment', array('OembedProviderPlugin', 'generate_attachment_content'), 91, 2);
+    add_action('oembed_provider_render_json', array('OembedProviderPlugin', 'render_json'), 99, 2);
+    add_action('oembed_provider_render_xml', array('OembedProviderPlugin', 'render_xml'), 99);
+  }
 
   /**
    * auto discovery links
@@ -47,7 +62,7 @@ class OembedProvider {
       return;
     }
 
-    $post_ID = url_to_postid( apply_filters( 'oembed_url', $wp->query_vars['url'] ) );
+    $post_ID = url_to_postid(apply_filters('oembed_url', $wp->query_vars['url']));
     $post = get_post($post_ID);
 
     if(!$post) {
@@ -90,6 +105,20 @@ class OembedProvider {
     $oembed_provider_data['author_name'] = $author->display_name;
     $oembed_provider_data['author_url'] = get_author_posts_url($author->ID, $author->nicename);
     $oembed_provider_data['title'] = $post->post_title;
+    $oembed_provider_data['type'] = 'rich';
+
+    // check thumbnail
+    if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
+      $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID));
+      $oembed_provider_data['thumbnail_url'] = $image[0];
+      $oembed_provider_data['thumbnail_width'] = $image[1];
+      $oembed_provider_data['thumbnail_height'] = $image[2];
+    }
+
+    // check content
+    if (!empty($post->post_content)) {
+      $oembed_provider_data['html'] = $post->post_content;
+    }
 
     return $oembed_provider_data;
   }
@@ -111,27 +140,13 @@ class OembedProvider {
 
     $metadata = wp_get_attachment_metadata($post->ID);
 
-    $oembed_provider_data['width'] = $metadata['width'];
-    $oembed_provider_data['height'] = $metadata['height'];
-
-    return $oembed_provider_data;
-  }
-
-  /**
-   * adds post/page specific content
-   *
-   * @param array $oembed_provider_data
-   * @param Object $post
-   */
-  public static function generate_post_content($oembed_provider_data, $post) {
-    if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
-      $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID));
-      $oembed_provider_data['thumbnail_url'] = $image[0];
-      $oembed_provider_data['thumbnail_width'] = $image[1];
-      $oembed_provider_data['thumbnail_height'] = $image[2];
+    if (isset($metadata['width'])) {
+      $oembed_provider_data['width'] = $metadata['width'];
     }
-    $oembed_provider_data['type'] = 'rich';
-    $oembed_provider_data['html'] = $post->post_content;
+
+    if (isset($metadata['height'])) {
+      $oembed_provider_data['height'] = $metadata['height'];
+    }
 
     return $oembed_provider_data;
   }
@@ -174,13 +189,3 @@ class OembedProvider {
     exit;
   }
 }
-
-add_action('wp_head', array('OembedProvider', 'add_oembed_links'));
-add_action('parse_query', array('OembedProvider', 'parse_query'));
-add_filter('query_vars', array('OembedProvider', 'query_vars'));
-add_filter('oembed_provider_data', array('OembedProvider', 'generate_default_content'), 90, 3);
-add_filter('oembed_provider_data_attachment', array('OembedProvider', 'generate_attachment_content'), 91, 2);
-add_filter('oembed_provider_data_post', array('OembedProvider', 'generate_post_content'), 91, 2);
-add_filter('oembed_provider_data_page', array('OembedProvider', 'generate_post_content'), 91, 2);
-add_action('oembed_provider_render_json', array('OembedProvider', 'render_json'), 99, 2);
-add_action('oembed_provider_render_xml', array('OembedProvider', 'render_xml'), 99);

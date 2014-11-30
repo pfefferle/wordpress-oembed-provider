@@ -2,8 +2,8 @@
 Contributors: pfefferle, candrews
 Tags: oembed, links
 Requires at least: 3.0
-Tested up to: 3.7.1
-Stable tag: 2.0.1
+Tested up to: 4.0.1
+Stable tag: 2.1.0
 
 An oEmbed provider for Wordpress.
 
@@ -26,6 +26,10 @@ oEmbed is a powerful protocol that allows sites to automatically embed content f
 Yes!
 
 == Changelog ==
+
+= 2.1.0
+* added `oembed_url` filter: https://github.com/pfefferle/wordpress-oembed-provider/pull/2
+* added `custom_post_type` support
 
 = 2.0.1 =
 * type 'rich' now returns the full html
