@@ -17,7 +17,6 @@ add_action('init', array('OembedProviderPlugin', 'init'));
  * @author Craig Andrews
  */
 class OembedProviderPlugin {
-
   /**
    * initialize plugin
    */
@@ -27,6 +26,8 @@ class OembedProviderPlugin {
     add_filter('query_vars', array('OembedProviderPlugin', 'query_vars'));
     add_filter('oembed_provider_data', array('OembedProviderPlugin', 'generate_default_content'), 90, 3);
     add_filter('oembed_provider_data_attachment', array('OembedProviderPlugin', 'generate_attachment_content'), 91, 2);
+    add_filter('oembed_provider_data_post', array('OembedProvider', 'generate_post_content'), 91, 2);
+    add_filter('oembed_provider_data_page', array('OembedProvider', 'generate_post_content'), 91, 2);
     add_action('oembed_provider_render_json', array('OembedProviderPlugin', 'render_json'), 99, 2);
     add_action('oembed_provider_render_xml', array('OembedProviderPlugin', 'render_xml'), 99);
   }
@@ -65,8 +66,8 @@ class OembedProviderPlugin {
     $post_ID = url_to_postid(apply_filters('oembed_url', $wp->query_vars['url']));
     $post = get_post($post_ID);
 
-    if(!$post) {
-      header('Status: 404');
+    if (!$post) {
+      status_header(404);
       wp_die("Not found");
     }
 
@@ -105,21 +106,31 @@ class OembedProviderPlugin {
     $oembed_provider_data['author_name'] = $author->display_name;
     $oembed_provider_data['author_url'] = get_author_posts_url($author->ID, $author->nicename);
     $oembed_provider_data['title'] = $post->post_title;
-    $oembed_provider_data['type'] = 'rich';
 
-    // check thumbnail
+    // check content
+    if (!empty($post->post_content)) {
+      $oembed_provider_data['html'] = $post->post_content;
+      $oembed_provider_data['type'] = 'rich';
+    } else {
+      $oembed_provider_data['type'] = 'link';
+    }
+
+    return $oembed_provider_data;
+  }
+
+  /**
+  * adds post/page specific content
+  *
+  * @param array $oembed_provider_data
+  * @param Object $post
+  */
+  public static function generate_post_content($oembed_provider_data, $post) {
     if (function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID)) {
       $image = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID));
       $oembed_provider_data['thumbnail_url'] = $image[0];
       $oembed_provider_data['thumbnail_width'] = $image[1];
       $oembed_provider_data['thumbnail_height'] = $image[2];
     }
-
-    // check content
-    if (!empty($post->post_content)) {
-      $oembed_provider_data['html'] = $post->post_content;
-    }
-
     return $oembed_provider_data;
   }
 
@@ -130,7 +141,7 @@ class OembedProviderPlugin {
    * @param Object $post
    */
   public static function generate_attachment_content($oembed_provider_data, $post) {
-    if (substr($post->post_mime_type,0,strlen('image/'))=='image/') {
+    if (wp_attachment_is_image($post->ID)) {
       $oembed_provider_data['type'] = 'photo';
     } else {
       $oembed_provider_data['type'] = 'link';
@@ -182,7 +193,7 @@ class OembedProviderPlugin {
     // render xml-output
     echo '<?xml version="1.0" encoding="' . get_bloginfo('charset') . '" ?>';
     echo '<oembed>';
-    foreach(array_keys($oembed_provider_data) as $element){
+    foreach (array_keys($oembed_provider_data) as $element) {
       echo '<' . $element . '>' . esc_html($oembed_provider_data[$element]) . '</' . $element . '>';
     }
     echo '</oembed>';
