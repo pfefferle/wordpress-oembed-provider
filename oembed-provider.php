@@ -50,6 +50,8 @@ class OembedProviderPlugin {
     $query_vars[] = 'format';
     $query_vars[] = 'url';
     $query_vars[] = 'callback';
+    $query_vars[] = 'maxwidth';
+    $query_vars[] = 'maxheight';
 
     return $query_vars;
   }
@@ -131,6 +133,7 @@ class OembedProviderPlugin {
       $oembed_provider_data['thumbnail_width'] = $image[1];
       $oembed_provider_data['thumbnail_height'] = $image[2];
     }
+
     return $oembed_provider_data;
   }
 
