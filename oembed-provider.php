@@ -26,8 +26,8 @@ class OembedProviderPlugin {
     add_filter('query_vars', array('OembedProviderPlugin', 'query_vars'));
     add_filter('oembed_provider_data', array('OembedProviderPlugin', 'generate_default_content'), 90, 3);
     add_filter('oembed_provider_data_attachment', array('OembedProviderPlugin', 'generate_attachment_content'), 91, 2);
-    add_filter('oembed_provider_data_post', array('OembedProvider', 'generate_post_content'), 91, 2);
-    add_filter('oembed_provider_data_page', array('OembedProvider', 'generate_post_content'), 91, 2);
+    add_filter('oembed_provider_data_post', array('OembedProviderPlugin', 'generate_post_content'), 91, 2);
+    add_filter('oembed_provider_data_page', array('OembedProviderPlugin', 'generate_post_content'), 91, 2);
     add_action('oembed_provider_render_json', array('OembedProviderPlugin', 'render_json'), 99, 2);
     add_action('oembed_provider_render_xml', array('OembedProviderPlugin', 'render_xml'), 99);
   }
